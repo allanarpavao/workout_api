@@ -4,7 +4,7 @@
 
 # WorkoutAPI
 
-Este é um projeto baseado em FastAPI para gerenciar atletas em uma competição de crossfit. Foi projetado pela instrutora da [dio.](https://web.dio.me/home) **Nayanna Nara** como um projeto prático. Ele fornece endpoints para operações CRUD, filtragem e paginação, além de lidar graciosamente com problemas de integridade de dados. A API foi construída com boas práticas modernas, tornando-a rápida, escalável e fácil de usar.
+Este é um projeto baseado em FastAPI para gerenciar atletas em uma competição de crossfit. Foi projetado pela instrutora da [dio](https://web.dio.me/home) **Nayanna Nara** como um projeto prático. Ele fornece endpoints para operações CRUD, filtragem e paginação, além de lidar graciosamente com problemas de integridade de dados. A API foi construída com boas práticas modernas, tornando-a rápida, escalável e fácil de usar.
 
 ## Funcionalidades
 
@@ -67,7 +67,7 @@ Para subir a API, execute:
 ```bash
 make run
 ```
-e acesse: http://127.0.0.1:8000/docs
+e acesse: http://localhost:8000/docs
 
 ## Endpoints
 
