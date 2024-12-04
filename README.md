@@ -1,46 +1,57 @@
-# FastAPI
-### Quem é o FastAPi?
-Framework FastAPI, alta performance, fácil de aprender, fácil de codar, pronto para produção.
-FastAPI é um moderno e rápido (alta performance) framework web para construção de APIs com Python 3.6 ou superior, baseado nos type hints padrões do Python.
+# WorkoutAPI
 
-### Async
-Código assíncrono apenas significa que a linguagem tem um jeito de dizer para o computador / programa que em certo ponto, ele terá que esperar por algo para finalizar em outro lugar
+This is a FastAPI-based project for managing athletes in a crossfit competition. It was designed by [dio.](https://web.dio.me/home) instructor **Nayanna Nara** as a hands-on project. It provides endpoints for CRUD operations, filtering, and pagination, and handles data integrity issues gracefully. The API is built with modern best practices, making it fast, scalable, and easy to use.
 
-# Projeto
-## WorkoutAPI
+## Features
 
-Esta é uma API de competição de crossfit chamada WorkoutAPI (isso mesmo rs, eu acabei unificando duas coisas que gosto: codar e treinar). É uma API pequena, devido a ser um projeto mais hands-on e simplificado nós desenvolveremos uma API de poucas tabelas, mas com o necessário para você aprender como utilizar o FastAPI.
+- Add, update, delete, and query athlete data.
+- Filter athletes by `nome` and `cpf` using query parameters.
+- Custom responses for listing athletes with related information (`centro_treinamento` and `categoria`).
+- Pagination with `limit` and `offset` query parameters.
+- Graceful handling of duplicate entries with descriptive error messages.
+- Documentation available via Swagger UI and ReDoc.
 
-## Modelagem de entidade e relacionamento - MER
-![MER](/mer.jpg "Modelagem de entidade e relacionamento")
+## Technology Stack
 
-## Stack da API
+- **FastAPI**: For building the API.
+- **SQLAlchemy**: For database interaction.
+- **Alembic**: For managing database migrations.
+- **Pydantic**: For data validation and serialization.
+- **PostgreSQL**: As the database.
+- **Docker**: For containerized deployment.
+- **fastapi-pagination**: For handling pagination in endpoints.
 
-A API foi desenvolvida utilizando o `fastapi` (async), junto das seguintes libs: `alembic`, `SQLAlchemy`, `pydantic`. Para salvar os dados está sendo utilizando o `postgres`, por meio do `docker`.
+## Setup Instructions
 
-## Execução da API
+Follow these steps to set up and run the project locally.
 
-Para executar o projeto, utilizei a [pyenv](https://github.com/pyenv/pyenv), com a versão 3.11.4 do `python` para o ambiente virtual.
+## Prerequisites
 
-Caso opte por usar pyenv, após instalar, execute:
+- Python 3.9 or higher
+- Docker and Docker Compose installed
+- PostgreSQL installed locally or via Docker
+
+To run the project, I used [pyenv](https://github.com/pyenv/pyenv) with Python version 3.11.4 for the virtual environment.
+
+If you choose to use pyenv, after installing it, execute:
 
 ```bash
 pyenv virtualenv 3.11.4 workoutapi
 pyenv activate workoutapi
 pip install -r requirements.txt
 ```
-Para subir o banco de dados, caso não tenha o [docker-compose](https://docs.docker.com/compose/install/linux/) instalado, faça a instalação e logo em seguida, execute:
+To start the database, if you don't have docker-compose installed, install it and then execute:
 
 ```bash
 make run-docker
 ```
-Para criar uma migration nova, execute:
+To create a new migration, execute:
 
 ```bash
 make create-migrations d="nome_da_migration"
 ```
 
-Para criar o banco de dados, execute:
+To create the database, execute:
 
 ```bash
 make run-migrations
@@ -48,36 +59,86 @@ make run-migrations
 
 ## API
 
-Para subir a API, execute:
+To start the API, execute:
 ```bash
 make run
 ```
-e acesse: http://127.0.0.1:8000/docs
+e access: http://localhost:8000/docs
 
-# Desafio Final
-    - adicionar query parameters nos endpoints
-        - atleta
-            - nome
-            - cpf
-    - customizar response de retorno de endpoints
-        - get all
-            - atleta
-                - nome
-                - centro_treinamento
-                - categoria
-    - Manipular exceção de integridade dos dados em cada módulo/tabela
-        - sqlalchemy.exc.IntegrityError e devolver a seguinte mensagem: “Já existe um atleta cadastrado com o cpf: x”
-        - status_code: 303
-    - Adicionar paginação utilizando a lib: fastapi-pagination
-        - limit e offset
-# Referências
 
-FastAPI: https://fastapi.tiangolo.com/
+## Endpoints
 
-Pydantic: https://docs.pydantic.dev/latest/
+### Athlete Endpoints
+- `GET /`: List all athletes with optional filters and pagination.
+  - **Query Parameters**:
+    - `limit`: Number of results to return.
+    - `offset`: Number of results to skip.
+    - `nome`: Filter by athlete name.
+    - `cpf`: Filter by athlete CPF.
+  - **Response**:
+    ```json
+    {
+        "items": [
+            {
+                "nome": "Joao",
+                "centro_treinamento": {"nome": "Centro A"},
+                "categoria": {"nome": "Categoria X"}
+            }
+        ],
+        "limit": 5,
+        "offset": 0,
+        "total": 10
+    }
+    ```
 
-SQLAlchemy: https://docs.sqlalchemy.org/en/20/
+- `POST /`: Add a new athlete.
+  - **Body**:
+    ```json
+    {
+        "nome": "Joao",
+        "cpf": "12345678901",
+        "idade": 25,
+        "peso": 75.5,
+        "altura": 170.0,
+        "sexo": "M",
+        "categoria": {"nome": "Categoria X"},
+        "centro_treinamento": {"nome": "Centro A"}
+    }
+    ```
 
-Alembic: https://alembic.sqlalchemy.org/en/latest/
+- `PATCH /{id}`: Update an athlete by ID.
+- `DELETE /{id}`: Delete an athlete by ID.
 
-Fastapi-pagination: https://uriyyo-fastapi-pagination.netlify.app/
+### Error Handling
+- `IntegrityError`: Custom error message for duplicate CPF.
+  - **Response**:
+    ```json
+    {
+        "detail": "Já existe um atleta cadastrado com o cpf: 12345678901"
+    }
+    ```
+
+### Pagination
+- `limit` and `offset` parameters are available on list endpoints for paginated responses.
+
+
+## Testing
+
+- Use Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Use Python's `requests` module:
+    ```python
+    import requests
+
+    url = "http://localhost:8000/?limit=5&offset=10"
+    response = requests.get(url)
+    print(response.json())
+    ```
+
+## References
+
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+- [SQLAlchemy Documentation](https://docs.sqlalchemy.org/)
+- [Pydantic Documentation](https://docs.pydantic.dev/)
+- [Docker Documentation](https://docs.docker.com/)
+- [Alembic Documentation](https://alembic.sqlalchemy.org/en/latest/)
+- [Fastapi-pagination Documentation](https://uriyyo-fastapi-pagination.netlify.app/)
