@@ -1,3 +1,7 @@
+
+[![Português](https://img.shields.io/badge/PT-blue)](README.pt.md)
+[![English](https://img.shields.io/badge/EN-blue)](README.md)
+
 # WorkoutAPI
 
 This is a FastAPI-based project for managing athletes in a crossfit competition. It was designed by [dio.](https://web.dio.me/home) instructor **Nayanna Nara** as a hands-on project. It provides endpoints for CRUD operations, filtering, and pagination, and handles data integrity issues gracefully. The API is built with modern best practices, making it fast, scalable, and easy to use.
